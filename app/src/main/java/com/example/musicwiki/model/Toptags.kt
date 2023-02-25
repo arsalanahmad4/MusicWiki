@@ -2,5 +2,5 @@ package com.example.musicwiki.model
 
 data class Toptags(
 //    val @attr: Attr,
-    val tag: List<Tag>
+    val tag: MutableList<Tag>
 )
