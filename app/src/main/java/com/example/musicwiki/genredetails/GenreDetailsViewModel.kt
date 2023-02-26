@@ -9,8 +9,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.musicwiki.MusicWikiApplication
 import com.example.musicwiki.MusicWikiRepository
+import com.example.musicwiki.genredetails.albums.albumdetails.model.AlbumDetailsResponse
 import com.example.musicwiki.genredetails.albums.model.TopAlbumsResponse
+import com.example.musicwiki.genredetails.artists.artistdetails.model.ArtistDetailsResponse
 import com.example.musicwiki.genredetails.artists.model.TopArtistResponse
+import com.example.musicwiki.genredetails.model.GenreDetailResponse
 import com.example.musicwiki.genredetails.tracks.model.TopTracksResponse
 import com.example.musicwiki.model.AllGenresResponse
 import com.example.musicwiki.util.Resource
@@ -21,6 +24,9 @@ import java.io.IOException
 
 class GenreDetailsViewModel(private val musicWikiRepository: MusicWikiRepository, app: Application) : AndroidViewModel(app) {
 
+    private val _genreInfoLiveData = MutableLiveData<Resource<GenreDetailResponse>>()
+    val genreInfoLiveData: LiveData<Resource<GenreDetailResponse>> = _genreInfoLiveData
+
     private val _topAlbumsLiveData = MutableLiveData<Resource<TopAlbumsResponse>>()
     val topAlbumsLiveData: LiveData<Resource<TopAlbumsResponse>> = _topAlbumsLiveData
 
@@ -30,7 +36,18 @@ class GenreDetailsViewModel(private val musicWikiRepository: MusicWikiRepository
     private val _topTracksLiveData = MutableLiveData<Resource<TopTracksResponse>>()
     val topTracksLiveData: LiveData<Resource<TopTracksResponse>> = _topTracksLiveData
 
+    private val _getAlbumDetailsLiveData = MutableLiveData<Resource<AlbumDetailsResponse>>()
+    val getAlbumDetailsLiveData: LiveData<Resource<AlbumDetailsResponse>> = _getAlbumDetailsLiveData
 
+    private val _getArtistDetailsLiveData = MutableLiveData<Resource<ArtistDetailsResponse>>()
+    val getArtistDetailsLiveData: LiveData<Resource<ArtistDetailsResponse>> = _getArtistDetailsLiveData
+
+
+    fun getGenreInfo(tag: String){
+        viewModelScope.launch {
+            safeGetGenreInfoCall(tag)
+        }
+    }
     fun getTopAlbums(tag:String){
         viewModelScope.launch {
             safeGetTopAlbumsCall(tag)
@@ -47,6 +64,47 @@ class GenreDetailsViewModel(private val musicWikiRepository: MusicWikiRepository
         viewModelScope.launch {
             safeGetTopTracksCall(tag)
         }
+    }
+
+    fun getArtistDetails(artist:String){
+        viewModelScope.launch {
+            safeGetArtistDetailsCall(artist)
+        }
+    }
+
+    fun getAlbumDetails(artist:String,album: String){
+        viewModelScope.launch {
+            safeGetAlbumDetailsCall(artist,album)
+        }
+    }
+
+    private suspend fun safeGetGenreInfoCall(tag:String) {
+        _genreInfoLiveData.postValue(Resource.Loading())
+        try {
+            val connectivityManager = getApplication<MusicWikiApplication>().getSystemService(
+                Context.CONNECTIVITY_SERVICE
+            ) as ConnectivityManager
+            if (hasInternetConnection(connectivityManager)) {
+                val response = musicWikiRepository.getGenreInfo(tag)
+                _genreInfoLiveData.postValue(handleGenreInfoApiResponse(response))
+            } else {
+                _genreInfoLiveData.postValue(Resource.Error("No internet connection"))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> _genreInfoLiveData.postValue(Resource.Error("Network Failure"))
+                else -> _genreInfoLiveData.postValue(Resource.Error("Conversion Error"))
+            }
+        }
+    }
+
+    private fun handleGenreInfoApiResponse(response: Response<GenreDetailResponse>): Resource<GenreDetailResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
     }
 
     private suspend fun safeGetTopAlbumsCall(tag:String) {
@@ -128,6 +186,64 @@ class GenreDetailsViewModel(private val musicWikiRepository: MusicWikiRepository
     }
 
     private fun handleTopTracksApiResponse(response: Response<TopTracksResponse>): Resource<TopTracksResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+    private suspend fun safeGetAlbumDetailsCall(artist:String,album:String) {
+        _getAlbumDetailsLiveData.postValue(Resource.Loading())
+        try {
+            val connectivityManager = getApplication<MusicWikiApplication>().getSystemService(
+                Context.CONNECTIVITY_SERVICE
+            ) as ConnectivityManager
+            if (hasInternetConnection(connectivityManager)) {
+                val response = musicWikiRepository.getAlbumDetails(artist,album)
+                _getAlbumDetailsLiveData.postValue(handleAlbumDetailsApiResponse(response))
+            } else {
+                _getAlbumDetailsLiveData.postValue(Resource.Error("No internet connection"))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> _getAlbumDetailsLiveData.postValue(Resource.Error("Network Failure"))
+                else -> _getAlbumDetailsLiveData.postValue(Resource.Error("Conversion Error"))
+            }
+        }
+    }
+
+    private fun handleAlbumDetailsApiResponse(response: Response<AlbumDetailsResponse>): Resource<AlbumDetailsResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+    private suspend fun safeGetArtistDetailsCall(artist:String) {
+        _getArtistDetailsLiveData.postValue(Resource.Loading())
+        try {
+            val connectivityManager = getApplication<MusicWikiApplication>().getSystemService(
+                Context.CONNECTIVITY_SERVICE
+            ) as ConnectivityManager
+            if (hasInternetConnection(connectivityManager)) {
+                val response = musicWikiRepository.getArtistDetails(artist)
+                _getArtistDetailsLiveData.postValue(handleArtistDetailsApiResponse(response))
+            } else {
+                _getArtistDetailsLiveData.postValue(Resource.Error("No internet connection"))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> _getArtistDetailsLiveData.postValue(Resource.Error("Network Failure"))
+                else -> _getArtistDetailsLiveData.postValue(Resource.Error("Conversion Error"))
+            }
+        }
+    }
+
+    private fun handleArtistDetailsApiResponse(response: Response<ArtistDetailsResponse>): Resource<ArtistDetailsResponse> {
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
                 return Resource.Success(resultResponse)
