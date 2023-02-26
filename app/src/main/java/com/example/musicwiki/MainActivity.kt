@@ -1,5 +1,6 @@
 package com.example.musicwiki
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +10,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicwiki.adapter.ElementsAdapter
+import com.example.musicwiki.genredetails.GenreDetailsActivity
 import com.example.musicwiki.model.Tag
+import com.example.musicwiki.util.Constants
 import com.example.musicwiki.util.Resource
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.runBlocking
@@ -69,7 +72,10 @@ class MainActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
         elementsAdapter!!.notifyDataSetChanged()
     }
 
-    override fun onItemClicked() {
+    override fun onItemClicked(genreName:String) {
+        val intent = Intent(this, GenreDetailsActivity::class.java)
+        intent.putExtra(Constants.BUNDLE_KEY_GENRE_NAME,genreName)
+        startActivity(intent)
      }
 
     private fun bindObservers(){

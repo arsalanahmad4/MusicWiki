@@ -11,7 +11,7 @@ import com.example.musicwiki.model.Tag
 class ElementsAdapter(private val mFeedList: List<Tag>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     interface Callbacks {
         fun onClickLoadMore()
-        fun onItemClicked()
+        fun onItemClicked(genreName:String)
     }
 
     private var mCallbacks: Callbacks? = null
@@ -34,6 +34,9 @@ class ElementsAdapter(private val mFeedList: List<Tag>) : RecyclerView.Adapter<R
         } else {
             val elementsViewHolder = holder as ElementsViewHolder?
             val elements = mFeedList[position]
+            elementsViewHolder?.itemView?.setOnClickListener {
+                if (mCallbacks != null) mCallbacks!!.onItemClicked(elements.name)
+            }
             elementsViewHolder!!.name.text = elements.name
         }
     }
@@ -76,9 +79,6 @@ class ElementsAdapter(private val mFeedList: List<Tag>) : RecyclerView.Adapter<R
         val name: TextView
 
         init {
-            itemView?.setOnClickListener {
-                if (mCallbacks != null) mCallbacks!!.onItemClicked()
-            }
             name = itemView!!.findViewById<View>(R.id.name) as TextView
         }
     }
