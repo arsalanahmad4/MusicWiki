@@ -10,15 +10,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicwiki.adapter.ElementsAdapter
+import com.example.musicwiki.databinding.ActivityAllGenresBinding
+import com.example.musicwiki.databinding.ActivityGenreDetailsBinding
 import com.example.musicwiki.genredetails.GenreDetailsActivity
 import com.example.musicwiki.model.Tag
 import com.example.musicwiki.util.Constants
 import com.example.musicwiki.util.Resource
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.runBlocking
 
 
-class MainActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
+class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
 
     private lateinit var musicWikiViewModel: MusicWikiViewModel
 
@@ -27,12 +27,16 @@ class MainActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
     private var recyclerView: RecyclerView? = null
     private var elementsAdapter: ElementsAdapter? = null
 
+    private var _binding: ActivityAllGenresBinding? = null
+    private val binding get() = _binding!!
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         musicWikiViewModel =
             ViewModelProvider(this, MusicWikiViewModelProviderFactory(application))[MusicWikiViewModel::class.java]
-        setContentView(R.layout.activity_main)
+        _binding = ActivityAllGenresBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         bindObservers()
 
@@ -79,10 +83,11 @@ class MainActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
      }
 
     private fun bindObservers(){
-        musicWikiViewModel.allGenreLiveData.observe(this@MainActivity, Observer { response ->
+        musicWikiViewModel.allGenreLiveData.observe(this@AllGenresActivity, Observer { response ->
             when (response) {
                 is Resource.Success -> {
                     response.data?.let { allGenres ->
+                        handleShimmer(false)
                         mainList = (allGenres.toptags.tag)
                         for (i in 0..5) {
                             dummyList.add(mainList[i])
@@ -92,14 +97,24 @@ class MainActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
                 }
                 is Resource.Error -> {
                     response.message?.let { message ->
-
+                        handleShimmer(false)
                     }
                 }
                 is Resource.Loading -> {
-
+                    handleShimmer(true)
                 }
             }
         })
+    }
+
+    private fun handleShimmer(isShimmering : Boolean){
+        if(isShimmering){
+            _binding?.shimmerFrameLayout?.visibility = View.VISIBLE
+            _binding?.recyclerView?.visibility = View.GONE
+        }else{
+            _binding?.shimmerFrameLayout?.visibility = View.GONE
+            _binding?.recyclerView?.visibility = View.VISIBLE
+        }
     }
 
 
