@@ -1,5 +1,7 @@
 package com.example.musicwiki.api
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.example.musicwiki.MusicWikiApplication
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -21,8 +23,8 @@ class RetrofitInstance {
                 .build()
         }
 
-        fun getOkHttpClient(): OkHttpClient {
-            return OkHttpClient.Builder()
+        private fun getOkHttpClient(): OkHttpClient {
+            val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor { chain ->
                     val url = chain
                         .request()
@@ -34,7 +36,9 @@ class RetrofitInstance {
                     chain.proceed(chain.request().newBuilder().url(url).build())
                 }
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .build()
+            okHttpClient.addInterceptor(ChuckerHandler.init()!!)
+
+            return okHttpClient.build()
         }
 
         val api: LastFMApi by lazy {

@@ -5,7 +5,14 @@ import android.content.Context
 
 class MusicWikiApplication:Application(){
 
-    companion object{
-        var appContext: Context? = null
+    companion object {
+        private lateinit var instance: MusicWikiApplication
+
+        fun getAppContext(): Context = instance.applicationContext
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
     }
 }

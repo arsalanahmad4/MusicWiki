@@ -39,6 +39,7 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
         setContentView(binding.root)
 
         bindObservers()
+        bindView()
 
 
 
@@ -66,6 +67,12 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
         recyclerView?.adapter = elementsAdapter
     }
 
+    private fun bindView() {
+        _binding?.swipeRefreshLayout?.setOnRefreshListener {
+            musicWikiViewModel.getAllGenre()
+        }
+    }
+
     override fun onClickLoadMore() {
         elementsAdapter!!.setWithFooter(false) // hide footer
 
@@ -88,11 +95,14 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
                 is Resource.Success -> {
                     response.data?.let { allGenres ->
                         handleShimmer(false)
+                        mainList.clear()
+                        dummyList.clear()
                         mainList = (allGenres.toptags.tag)
                         for (i in 0..5) {
                             dummyList.add(mainList[i])
                         }
                         elementsAdapter?.notifyDataSetChanged()
+                        _binding?.swipeRefreshLayout?.isRefreshing = false
                     }
                 }
                 is Resource.Error -> {
