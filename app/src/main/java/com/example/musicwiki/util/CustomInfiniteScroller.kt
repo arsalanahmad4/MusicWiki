@@ -1,5 +1,6 @@
 package com.example.musicwiki.util
 
+import android.os.Bundle
 import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,14 @@ abstract class CustomInfiniteScroller : RecyclerView.OnScrollListener, CustomScr
 
     constructor(startPageIndex: Int) {
         this.startPage = startPageIndex
+    }
+
+    constructor(startPageIndex: Int, dataFetchSize: Int, savedInstanceState: Bundle?) {
+        this.startPage = startPageIndex
+        DATA_FETCH_SIZE = dataFetchSize
+        if (savedInstanceState != null) {
+            currentPage = savedInstanceState.getInt("currentPage")
+        }
     }
 
     constructor(startPageIndex: Int, dataFetchSize: Int) {
