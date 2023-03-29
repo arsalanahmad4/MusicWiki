@@ -1,20 +1,25 @@
 package com.example.musicwiki.genredetails.albums
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.musicwiki.R
 import com.example.musicwiki.genredetails.GenreDetailsActivity
 import com.example.musicwiki.genredetails.GenreDetailsViewModel
+import com.example.musicwiki.genredetails.albums.adapter.AlbumsAdapter
 import com.example.musicwiki.util.Constants
 import com.example.musicwiki.util.Resource
+
 
 class AlbumsFragment : Fragment() {
 
     lateinit var viewModel: GenreDetailsViewModel
+    lateinit var  recyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +34,10 @@ class AlbumsFragment : Fragment() {
         viewModel = (activity as GenreDetailsActivity).viewModel
         arguments?.getString(Constants.BUNDLE_KEY_GENRE_NAME)?.let { viewModel.getTopAlbums(it) }
         bindObserver()
+
+        recyclerView =view.findViewById(R.id.rvAlbums)
+        recyclerView.layoutManager = GridLayoutManager(activity, 2)
+
     }
 
     private fun bindObserver(){
@@ -36,7 +45,7 @@ class AlbumsFragment : Fragment() {
             when (response) {
                 is Resource.Success -> {
                     response.data?.let { albumsInfo ->
-
+                        recyclerView.adapter = AlbumsAdapter(albumsInfo.albums.album)
                     }
                 }
                 is Resource.Error -> {
