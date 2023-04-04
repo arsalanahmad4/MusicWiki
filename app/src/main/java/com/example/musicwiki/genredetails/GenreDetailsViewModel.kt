@@ -7,9 +7,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.*
 import com.example.musicwiki.MusicWikiApplication
 import com.example.musicwiki.MusicWikiRepository
+import com.example.musicwiki.genredetails.albums.adapter.AlbumsPagingSource
 import com.example.musicwiki.genredetails.albums.albumdetails.model.AlbumDetailsResponse
+import com.example.musicwiki.genredetails.albums.model.Album
 import com.example.musicwiki.genredetails.albums.model.TopAlbumsResponse
 import com.example.musicwiki.genredetails.artists.artistdetails.model.ArtistDetailsResponse
 import com.example.musicwiki.genredetails.artists.model.TopArtistResponse
@@ -48,9 +51,9 @@ class GenreDetailsViewModel(private val musicWikiRepository: MusicWikiRepository
             safeGetGenreInfoCall(tag)
         }
     }
-    fun getTopAlbums(tag:String){
+    fun getTopAlbums(tag:String,page:Int){
         viewModelScope.launch {
-            safeGetTopAlbumsCall(tag)
+            safeGetTopAlbumsCall(tag,page)
         }
     }
 
@@ -107,14 +110,14 @@ class GenreDetailsViewModel(private val musicWikiRepository: MusicWikiRepository
         return Resource.Error(response.message())
     }
 
-    private suspend fun safeGetTopAlbumsCall(tag:String) {
+    private suspend fun safeGetTopAlbumsCall(tag:String,page:Int) {
         _topAlbumsLiveData.postValue(Resource.Loading())
         try {
             val connectivityManager = getApplication<MusicWikiApplication>().getSystemService(
                 Context.CONNECTIVITY_SERVICE
             ) as ConnectivityManager
             if (hasInternetConnection(connectivityManager)) {
-                val response = musicWikiRepository.getTopAlbums(tag)
+                val response = musicWikiRepository.getTopAlbums(tag,page)
                 _topAlbumsLiveData.postValue(handleTopAlbumsApiResponse(response))
             } else {
                 _topAlbumsLiveData.postValue(Resource.Error("No internet connection"))
@@ -251,4 +254,15 @@ class GenreDetailsViewModel(private val musicWikiRepository: MusicWikiRepository
         }
         return Resource.Error(response.message())
     }
+
+//    var allIndentslist:LiveData<PagingData<Album>>? = null
+//    fun getPagedIndentsList(filter:String) {
+//        allIndentslist =  musicWikiRepository.getPagedIndents(filter).cachedIn(viewModelScope)
+//    }
+
+    private val pagingSourceFactory = { AlbumsPagingSource(musicWikiRepository,"electronic") }
+    val allIndentslist = Pager(
+        config = PagingConfig(50),
+        pagingSourceFactory = pagingSourceFactory
+    ).liveData.cachedIn(viewModelScope)
 }

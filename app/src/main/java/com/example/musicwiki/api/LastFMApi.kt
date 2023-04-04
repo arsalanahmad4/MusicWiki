@@ -28,7 +28,9 @@ interface LastFMApi {
     @GET("2.0/?method=tag.gettopalbums")
     suspend fun getTopAlbums(
         @Query("tag")
-        tag:String
+        tag:String,
+        @Query("page")
+        page:Int
     ) :Response<TopAlbumsResponse>
 
     @GET("2.0/?method=tag.gettopartists")
