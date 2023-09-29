@@ -43,6 +43,11 @@ class AlbumDetailsActivity : AppCompatActivity() {
     }
 
     private fun bindView() {
-        viewModel.getAlbumDetails("","")
+        val artist = intent.extras?.getString("artist")
+        val album = intent.extras?.getString("album")
+        if(!artist.isNullOrEmpty() && !album.isNullOrEmpty()){
+            viewModel.getAlbumDetails(artist,album)
+
+        }
     }
 }

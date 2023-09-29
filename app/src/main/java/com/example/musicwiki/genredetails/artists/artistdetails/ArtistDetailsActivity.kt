@@ -42,6 +42,6 @@ class ArtistDetailsActivity : AppCompatActivity() {
     }
 
     private fun bindView() {
-        viewModel.getArtistDetails("")
+        intent.extras?.getString("artist")?.let { viewModel.getArtistDetails(it) }
     }
 }
