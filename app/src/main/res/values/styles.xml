@@ -19,5 +19,19 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="CUstomArtistDetailsTheme" parent="Theme.MusicWiki.NoActionBar">
+        <item name="CustomChipChoiceStyle">@style/AffiliateCustomChipStyle</item>
+    </style>
+
+    <style name="AffiliateCustomChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textColor">@color/chip_select_unselect_text_color_affiliate</item>
+        <item name="chipBackgroundColor">@color/chip_select_unselect_bg_color_affiliate</item>
+        <item name="chipStrokeColor">@color/chip_select_unselect_stroke_color_affiliate</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="chipMinHeight">40dp</item>
+        <item name="cornerRadius">40dp</item>
+    </style>
+
 
 </resources>

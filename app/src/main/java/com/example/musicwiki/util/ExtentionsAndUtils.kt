@@ -1,10 +1,16 @@
 package com.example.musicwiki.util
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
+import com.example.musicwiki.R
 import java.util.*
 
 
@@ -30,4 +36,36 @@ fun hasInternetConnection(connectivityManager: ConnectivityManager) : Boolean{
         }
     }
     return false
+}
+
+fun openUrlInCustomTabIntent(url:String,activity: Activity){
+    val customIntent = CustomTabsIntent.Builder()
+    customIntent.setToolbarColor(
+        ContextCompat.getColor(
+            activity,
+            R.color.purple_theme_color
+        )
+    )
+    openCustomTab(activity,customIntent.build(), Uri.parse(url))
+}
+fun openCustomTab(activity: Activity, customTabsIntent: CustomTabsIntent, uri: Uri) {
+    // package name is the default package
+    // for our custom chrome tab
+    val packageName = "com.android.chrome"
+    if (packageName != null) {
+
+        // we are checking if the package name is not null
+        // if package name is not null then we are calling
+        // that custom chrome tab with intent by passing its
+        // package name.
+        customTabsIntent.intent.setPackage(packageName)
+
+        // in that custom tab intent we are passing
+        // our url which we have to browse.
+        customTabsIntent.launchUrl(activity, uri)
+    } else {
+        // if the custom tabs fails to load then we are simply
+        // redirecting our user to users device default browser.
+        activity.startActivity(Intent(Intent.ACTION_VIEW, uri))
+    }
 }

@@ -9,4 +9,10 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="light_1">#E0E0E0</color>
+    <color name="purple_theme_color">#A698FF</color>
+    <color name="transparent">#00000000</color>
+    <color name="bnv_unchecked_black">#999CA0</color>
+    <color name="light_popo">#000000</color>
+    <color name="primary">#0E6FFF</color>
+
 </resources>

@@ -2,6 +2,10 @@ package com.example.musicwiki
 
 import android.app.Application
 import android.content.Context
+import io.branch.referral.Branch
+
+
+
 
 class MusicWikiApplication:Application(){
 
@@ -14,5 +18,10 @@ class MusicWikiApplication:Application(){
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+        // Branch logging for debugging
+        Branch.enableLogging()
+        // Branch object initialization
+        Branch.getAutoInstance(this)
     }
 }

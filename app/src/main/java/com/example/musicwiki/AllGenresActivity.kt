@@ -2,10 +2,15 @@ package com.example.musicwiki
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +21,8 @@ import com.example.musicwiki.genredetails.GenreDetailsActivity
 import com.example.musicwiki.model.Tag
 import com.example.musicwiki.util.Constants
 import com.example.musicwiki.util.Resource
+import io.branch.referral.util.BRANCH_STANDARD_EVENT
+import io.branch.referral.util.BranchEvent
 
 
 class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
@@ -30,6 +37,22 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
     private var _binding: ActivityAllGenresBinding? = null
     private val binding get() = _binding!!
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        private var doubleBackToExitPressedOnce = false
+
+        override fun handleOnBackPressed() {
+            if (doubleBackToExitPressedOnce) {
+                finishAffinity()
+            } else {
+                doubleBackToExitPressedOnce = true
+                Toast.makeText(applicationContext, resources.getString(R.string.back_to_exit), Toast.LENGTH_SHORT).show()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    doubleBackToExitPressedOnce = false
+                }, 2000)
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +60,7 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
             ViewModelProvider(this, MusicWikiViewModelProviderFactory(application))[MusicWikiViewModel::class.java]
         _binding = ActivityAllGenresBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        this.onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         bindObservers()
         bindView()
@@ -67,6 +91,12 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
         recyclerView?.adapter = elementsAdapter
     }
 
+    // Unregister the onBackPressedCallback in the onDestroy or onDestroyView method
+    override fun onDestroy() {
+        super.onDestroy()
+        onBackPressedCallback.remove()
+    }
+
     private fun bindView() {
         _binding?.swipeRefreshLayout?.setOnRefreshListener {
             musicWikiViewModel.getAllGenre()
@@ -87,6 +117,11 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
         val intent = Intent(this, GenreDetailsActivity::class.java)
         intent.putExtra(Constants.BUNDLE_KEY_GENRE_NAME,genreName)
         startActivity(intent)
+        BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
+            .setCustomerEventAlias("my_custom_alias")
+            .setDescription("Genre Viewed")
+            .addCustomDataProperty("Genre", genreName)
+            .logEvent(applicationContext)
      }
 
     private fun bindObservers(){

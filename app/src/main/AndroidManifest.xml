@@ -21,7 +21,8 @@
         tools:targetApi="31">
         <activity
             android:name=".genredetails.artists.artistdetails.ArtistDetailsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/CUstomArtistDetailsTheme"/>
         <activity
             android:name=".genredetails.albums.albumdetails.AlbumDetailsActivity"
             android:exported="false" />
@@ -32,13 +33,45 @@
             android:theme="@style/Theme.MusicWiki.NoActionBar" />
         <activity
             android:name=".AllGenresActivity"
-            android:exported="true">
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <data
+                    android:host="open"
+                    android:scheme="open" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">                                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="musicwiki.app.link"
+                    android:scheme="https" />
+            </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="io.branch.sdk.TestMode"
+            android:value="false" />
+        <meta-data
+            android:name="io.branch.sdk.BranchKey"
+            android:value="key_live_jveDhIVvDiCtfFUER6qYxkggEDerqp2j" />
+        <meta-data
+            android:name="io.branch.sdk.BranchKey.test"
+            android:value="key_test_bCcAkJPCucFyotVAP3A1BfbfCukrFp8q" />
     </application>
 
 </manifest>
