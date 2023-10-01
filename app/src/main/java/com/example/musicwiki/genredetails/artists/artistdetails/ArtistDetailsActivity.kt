@@ -80,37 +80,37 @@ class ArtistDetailsActivity : AppCompatActivity() {
     private fun setDetailsText(artistDetails: String) {
 
         var myShortenedText = ""
-        binding.tvCampaignDetail.text = artistDetails;
-        binding.tvCampaignDetail.post {
+        binding.tvDetails.text = artistDetails;
+        binding.tvDetails.post {
             // Past the maximum number of lines we want to display.
-            if (binding.tvCampaignDetail.lineCount > 3) {
-                val lastCharShown = binding.tvCampaignDetail.layout.getLineVisibleEnd(3 - 1);
+            if (binding.tvDetails.lineCount > 3) {
+                val lastCharShown = binding.tvDetails.layout.getLineVisibleEnd(3 - 1);
 
-                binding.tvCampaignDetail.maxLines = 3;
+                binding.tvDetails.maxLines = 3;
                 val actionDisplayText = artistDetails.substring(0, lastCharShown) + "   "
 
                 myShortenedText = actionDisplayText
                 // Set the truncated text to the TextView
-                binding.tvCampaignReadMore.visibility = View.VISIBLE
-                binding.tvCampaignDetail.text = actionDisplayText;
+                binding.tvReadMore.visibility = View.VISIBLE
+                binding.tvDetails.text = actionDisplayText;
             } else {
                 myShortenedText = artistDetails
             }
         }
-        binding.tvCampaignReadMore.setOnClickListener {
+        binding.tvReadMore.setOnClickListener {
             // Handle click event here, for example, show the full text.
-            binding.tvCampaignDetail.maxLines = Integer.MAX_VALUE
-            binding.tvCampaignDetail.text = artistDetails
+            binding.tvDetails.maxLines = Integer.MAX_VALUE
+            binding.tvDetails.text = artistDetails
 
-            binding.tvCampaignReadMore.visibility = View.GONE
-            binding.tvCampaignReadLess.visibility = View.VISIBLE
+            binding.tvReadMore.visibility = View.GONE
+            binding.tvReadLess.visibility = View.VISIBLE
         }
-        binding.tvCampaignReadLess.setOnClickListener {
+        binding.tvReadLess.setOnClickListener {
             // Handle click event here, for example, show the full text.
-            binding.tvCampaignDetail.maxLines = 3
-            binding.tvCampaignDetail.text = myShortenedText
-            binding.tvCampaignReadMore.visibility = View.VISIBLE
-            binding.tvCampaignReadLess.visibility = View.GONE
+            binding.tvDetails.maxLines = 3
+            binding.tvDetails.text = myShortenedText
+            binding.tvReadMore.visibility = View.VISIBLE
+            binding.tvReadLess.visibility = View.GONE
         }
     }
 

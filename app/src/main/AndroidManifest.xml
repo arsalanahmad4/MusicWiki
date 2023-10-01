@@ -25,7 +25,8 @@
             android:theme="@style/CUstomArtistDetailsTheme"/>
         <activity
             android:name=".genredetails.albums.albumdetails.AlbumDetailsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/CUstomArtistDetailsTheme"/>
         <activity
             android:name=".genredetails.GenreDetailsActivity"
             android:exported="false"

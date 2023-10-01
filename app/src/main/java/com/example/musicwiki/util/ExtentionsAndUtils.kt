@@ -2,6 +2,7 @@ package com.example.musicwiki.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -67,5 +68,22 @@ fun openCustomTab(activity: Activity, customTabsIntent: CustomTabsIntent, uri: U
         // if the custom tabs fails to load then we are simply
         // redirecting our user to users device default browser.
         activity.startActivity(Intent(Intent.ACTION_VIEW, uri))
+    }
+}
+
+fun shareLink(context: Context, shareUrl: String?) {
+    Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, shareUrl)
+        Intent.createChooser(this, "Share via").apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }.also {
+            try {
+                context.startActivity(it)
+            } catch (e: java.lang.Exception) {
+
+            }
+        }
     }
 }
