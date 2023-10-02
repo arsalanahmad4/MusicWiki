@@ -1,8 +1,5 @@
 package com.example.musicwiki.genredetails.artists.adapter
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.musicwiki.ActivityNavigator
+import com.example.musicwiki.util.ActivityNavigator
 import com.example.musicwiki.R
-import com.example.musicwiki.genredetails.artists.artistdetails.ArtistDetailsActivity
 import com.example.musicwiki.genredetails.artists.model.Artist
 
 

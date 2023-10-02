@@ -18,6 +18,8 @@
         android:gravity="center"
         android:maxLines="2"
         android:ellipsize="end"
-        android:background="#4F784A06"
-        android:textColor="@color/black"/>
+        android:background="@drawable/gradient_background"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:paddingHorizontal="4dp"/>
 </RelativeLayout>

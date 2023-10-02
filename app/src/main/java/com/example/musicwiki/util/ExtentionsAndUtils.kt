@@ -9,6 +9,7 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
+import android.view.View
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import com.example.musicwiki.R
@@ -37,6 +38,18 @@ fun hasInternetConnection(connectivityManager: ConnectivityManager) : Boolean{
         }
     }
     return false
+}
+
+fun View?.visible() {
+    this?.visibility = View.VISIBLE
+}
+
+fun View?.invisible() {
+    this?.visibility = View.INVISIBLE
+}
+
+fun View?.gone() {
+    this?.visibility = View.GONE
 }
 
 fun openUrlInCustomTabIntent(url:String,activity: Activity){

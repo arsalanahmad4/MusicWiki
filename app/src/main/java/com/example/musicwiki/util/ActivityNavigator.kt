@@ -1,8 +1,9 @@
-package com.example.musicwiki
+package com.example.musicwiki.util
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.example.musicwiki.AllGenresActivity
 import com.example.musicwiki.genredetails.albums.albumdetails.AlbumDetailsActivity
 import com.example.musicwiki.genredetails.artists.artistdetails.ArtistDetailsActivity
 

@@ -6,24 +6,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/gradient_background"
-    tools:context=".AllGenresActivity">
+    tools:context=".AllGenresActivity"
+    android:paddingVertical="20dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Music Wiki"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textStyle="italic"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:text="Welcome!"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:textStyle="bold"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Choose a genre to start with"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:textStyle="italic"
+        android:textSize="18sp"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"

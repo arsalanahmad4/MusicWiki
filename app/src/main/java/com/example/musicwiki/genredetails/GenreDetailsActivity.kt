@@ -1,6 +1,7 @@
 package com.example.musicwiki.genredetails
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -15,6 +16,7 @@ import com.example.musicwiki.genredetails.artists.ArtistFragment
 import com.example.musicwiki.genredetails.tracks.TracksFragment
 import com.example.musicwiki.util.Constants
 import com.example.musicwiki.util.Resource
+import com.example.musicwiki.util.gone
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -31,9 +33,11 @@ class GenreDetailsActivity : AppCompatActivity() {
             ViewModelProvider(this, GenreViewModelProviderFactory(application))[GenreDetailsViewModel::class.java]
         binding = ActivityGenreDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        setSupportActionBar(findViewById(R.id.toolbar))
-        binding.toolbarLayout.title = intent.extras?.getString(Constants.BUNDLE_KEY_GENRE_NAME)
+        binding.toolbar.tvBrandName.text = intent.extras?.getString(Constants.BUNDLE_KEY_GENRE_NAME)?.capitalize()
+        binding.toolbar.llLinkShare.gone()
+        binding.toolbar.toolbarBack.setOnClickListener {
+            onBackPressed()
+        }
         bindView()
         bindObservers()
     }

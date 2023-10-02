@@ -120,7 +120,7 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
         BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
             .setCustomerEventAlias("my_custom_alias")
             .setDescription("Genre Viewed")
-            .addCustomDataProperty("Genre", genreName)
+            .addCustomDataProperty(Constants.BUNDLE_KEY_GENRE_NAME, genreName)
             .logEvent(applicationContext)
      }
 

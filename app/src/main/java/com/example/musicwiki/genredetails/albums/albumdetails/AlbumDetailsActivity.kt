@@ -1,13 +1,12 @@
 package com.example.musicwiki.genredetails.albums.albumdetails
 
-import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.musicwiki.ActivityNavigator
+import com.example.musicwiki.util.ActivityNavigator
 import com.example.musicwiki.R
 import com.example.musicwiki.databinding.ActivityAlbumDetailsBinding
 import com.example.musicwiki.genredetails.GenreDetailsViewModel
@@ -20,7 +19,6 @@ import com.example.musicwiki.util.shareLink
 import com.google.android.material.chip.Chip
 import io.branch.indexing.BranchUniversalObject
 import io.branch.referral.Branch
-import io.branch.referral.util.ContentMetadata
 import io.branch.referral.util.LinkProperties
 
 class AlbumDetailsActivity : AppCompatActivity() {

@@ -3,15 +3,13 @@ package com.example.musicwiki
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.musicwiki.model.BranchResponseData
+import com.example.musicwiki.util.ActivityNavigator
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import io.branch.referral.Branch
-import io.branch.referral.BranchError
-import org.json.JSONObject
 
 
 class SplashActivity : AppCompatActivity() {

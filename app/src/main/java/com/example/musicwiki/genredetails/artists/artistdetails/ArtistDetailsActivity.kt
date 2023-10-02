@@ -1,17 +1,12 @@
 package com.example.musicwiki.genredetails.artists.artistdetails
 
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.musicwiki.ActivityNavigator
+import com.example.musicwiki.util.ActivityNavigator
 import com.example.musicwiki.R
 import com.example.musicwiki.databinding.ActivityArtistDetailsBinding
 import com.example.musicwiki.genredetails.GenreDetailsViewModel

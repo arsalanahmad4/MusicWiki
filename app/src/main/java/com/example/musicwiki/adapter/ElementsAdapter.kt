@@ -37,7 +37,7 @@ class ElementsAdapter(private val mFeedList: List<Tag>) : RecyclerView.Adapter<R
             elementsViewHolder?.itemView?.setOnClickListener {
                 if (mCallbacks != null) mCallbacks!!.onItemClicked(elements.name)
             }
-            elementsViewHolder!!.name.text = elements.name
+            elementsViewHolder!!.name.text = elements.name.capitalize()
         }
     }
 
