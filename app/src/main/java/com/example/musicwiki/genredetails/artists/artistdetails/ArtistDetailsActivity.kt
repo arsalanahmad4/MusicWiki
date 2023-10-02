@@ -14,8 +14,10 @@ import com.example.musicwiki.genredetails.GenreViewModelProviderFactory
 import com.example.musicwiki.genredetails.artists.artistdetails.model.ArtistDetailsResponse
 import com.example.musicwiki.genredetails.artists.artistdetails.model.Tag
 import com.example.musicwiki.util.Resource
+import com.example.musicwiki.util.gone
 import com.example.musicwiki.util.openUrlInCustomTabIntent
 import com.example.musicwiki.util.shareLink
+import com.example.musicwiki.util.visible
 import com.google.android.material.chip.Chip
 import io.branch.indexing.BranchUniversalObject
 import io.branch.referral.Branch
@@ -48,17 +50,19 @@ class ArtistDetailsActivity : AppCompatActivity() {
         viewModel.getArtistDetailsLiveData.observe(this@ArtistDetailsActivity, Observer { response ->
             when (response) {
                 is Resource.Success -> {
+                    binding.rlLoader.gone()
                     response.data?.let { artistDetails ->
                         setApiResponseData(artistDetails)
                     }
                 }
                 is Resource.Error -> {
+                    binding.rlLoader.gone()
                     response.message?.let { message ->
 
                     }
                 }
                 is Resource.Loading -> {
-
+                    binding.rlLoader.visible()
                 }
             }
         })
@@ -69,52 +73,58 @@ class ArtistDetailsActivity : AppCompatActivity() {
     }
 
     private fun setApiResponseData(artistDetails: ArtistDetailsResponse) {
-        binding.tvTotalListenersCount.text = artistDetails.artist.stats.listeners
-        binding.tvPlayCount.text = artistDetails.artist.stats.playcount
-        setDetailsText(artistDetails.artist.bio.content)
-        addChipsFromList(artistDetails.artist.tags.tag)
+        binding.tvTotalListenersCount.text = artistDetails.artist?.stats?.listeners?:""
+        binding.tvPlayCount.text = artistDetails.artist?.stats?.playcount?:""
+        setDetailsText(artistDetails.artist?.bio?.content)
+        artistDetails.artist?.tags?.tag?.let { addChipsFromList(it) }
         binding.tvVisitWebsite.setOnClickListener {
-            openUrlInCustomTabIntent(artistDetails.artist.url,this)
+            openUrlInCustomTabIntent(artistDetails?.artist?.url?:"",this)
         }
         binding.toolbar.llLinkShare.setOnClickListener{
-            createShareLink(artistDetails.artist.url,artistDetails.artist.name,artistDetails.artist.image.get(0).text)
+            createShareLink(artistDetails.artist?.url?:"",artistDetails.artist?.name?:"",artistDetails.artist?.image?.get(0)?.text?:"")
         }
     }
 
-    private fun setDetailsText(artistDetails: String) {
+    private fun setDetailsText(artistDetails: String?) {
+        if(!artistDetails.isNullOrEmpty()){
+            var myShortenedText = ""
+            binding.tvDetails.text = artistDetails;
+            binding.tvDetails.post {
+                // Past the maximum number of lines we want to display.
+                if (binding.tvDetails.lineCount > 3) {
+                    val lastCharShown = binding.tvDetails.layout.getLineVisibleEnd(3 - 1);
 
-        var myShortenedText = ""
-        binding.tvDetails.text = artistDetails;
-        binding.tvDetails.post {
-            // Past the maximum number of lines we want to display.
-            if (binding.tvDetails.lineCount > 3) {
-                val lastCharShown = binding.tvDetails.layout.getLineVisibleEnd(3 - 1);
+                    binding.tvDetails.maxLines = 3;
+                    val actionDisplayText = artistDetails.substring(0, lastCharShown) + "   "
 
-                binding.tvDetails.maxLines = 3;
-                val actionDisplayText = artistDetails.substring(0, lastCharShown) + "   "
-
-                myShortenedText = actionDisplayText
-                // Set the truncated text to the TextView
-                binding.tvReadMore.visibility = View.VISIBLE
-                binding.tvDetails.text = actionDisplayText;
-            } else {
-                myShortenedText = artistDetails
+                    myShortenedText = actionDisplayText
+                    // Set the truncated text to the TextView
+                    binding.tvReadMore.visibility = View.VISIBLE
+                    binding.tvDetails.text = actionDisplayText;
+                } else {
+                    myShortenedText = artistDetails
+                }
             }
-        }
-        binding.tvReadMore.setOnClickListener {
-            // Handle click event here, for example, show the full text.
-            binding.tvDetails.maxLines = Integer.MAX_VALUE
-            binding.tvDetails.text = artistDetails
+            binding.tvReadMore.setOnClickListener {
+                // Handle click event here, for example, show the full text.
+                binding.tvDetails.maxLines = Integer.MAX_VALUE
+                binding.tvDetails.text = artistDetails
 
-            binding.tvReadMore.visibility = View.GONE
-            binding.tvReadLess.visibility = View.VISIBLE
-        }
-        binding.tvReadLess.setOnClickListener {
-            // Handle click event here, for example, show the full text.
-            binding.tvDetails.maxLines = 3
-            binding.tvDetails.text = myShortenedText
-            binding.tvReadMore.visibility = View.VISIBLE
-            binding.tvReadLess.visibility = View.GONE
+                binding.tvReadMore.visibility = View.GONE
+                binding.tvReadLess.visibility = View.VISIBLE
+            }
+            binding.tvReadLess.setOnClickListener {
+                // Handle click event here, for example, show the full text.
+                binding.tvDetails.maxLines = 3
+                binding.tvDetails.text = myShortenedText
+                binding.tvReadMore.visibility = View.VISIBLE
+                binding.tvReadLess.visibility = View.GONE
+            }
+        }else{
+            binding.tvDetails.gone()
+            binding.tvReadLess.gone()
+            binding.tvReadMore.gone()
+            binding.tvAbout.gone()
         }
     }
 

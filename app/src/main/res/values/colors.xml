@@ -14,5 +14,6 @@
     <color name="bnv_unchecked_black">#999CA0</color>
     <color name="light_popo">#000000</color>
     <color name="primary">#0E6FFF</color>
+    <color name="trans_white">#99FFFFFF</color>
 
 </resources>

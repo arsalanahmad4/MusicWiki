@@ -14,8 +14,10 @@ import com.example.musicwiki.genredetails.GenreViewModelProviderFactory
 import com.example.musicwiki.genredetails.albums.albumdetails.model.AlbumDetailsResponse
 import com.example.musicwiki.genredetails.albums.albumdetails.model.Tag
 import com.example.musicwiki.util.Resource
+import com.example.musicwiki.util.gone
 import com.example.musicwiki.util.openUrlInCustomTabIntent
 import com.example.musicwiki.util.shareLink
+import com.example.musicwiki.util.visible
 import com.google.android.material.chip.Chip
 import io.branch.indexing.BranchUniversalObject
 import io.branch.referral.Branch
@@ -53,17 +55,19 @@ class AlbumDetailsActivity : AppCompatActivity() {
         viewModel.getAlbumDetailsLiveData.observe(this@AlbumDetailsActivity, Observer { response ->
             when (response) {
                 is Resource.Success -> {
+                    binding.rlLoader.gone()
                     response.data?.let { albumDetails ->
                         setApiResponseData(albumDetails)
                     }
                 }
                 is Resource.Error -> {
+                    binding.rlLoader.gone()
                     response.message?.let { message ->
 
                     }
                 }
                 is Resource.Loading -> {
-
+                    binding.rlLoader.visible()
                 }
             }
         })
@@ -76,15 +80,15 @@ class AlbumDetailsActivity : AppCompatActivity() {
     }
 
     private fun setApiResponseData(albumDetails: AlbumDetailsResponse) {
-        binding.tvTotalListenersCount.text = albumDetails.album.listeners
-        binding.tvPlayCount.text = albumDetails.album.playcount
-        setDetailsText(albumDetails.album.wiki.summary)
-        addChipsFromList(albumDetails.album.tags.tag)
+        binding.tvTotalListenersCount.text = albumDetails.album?.listeners?:""
+        binding.tvPlayCount.text = albumDetails.album?.playcount?:""
+        setDetailsText(albumDetails.album?.wiki?.summary)
+        albumDetails.album?.tags?.tag?.let { addChipsFromList(it) }
         binding.tvVisitWebsite.setOnClickListener {
-            openUrlInCustomTabIntent(albumDetails.album.url,this)
+            openUrlInCustomTabIntent(albumDetails.album?.url?:"",this)
         }
         binding.toolbar.llLinkShare.setOnClickListener{
-            createShareLink(albumDetails.album.url,albumDetails.album.name,albumDetails.album.artist,albumDetails.album.image.get(0).text)
+            createShareLink(albumDetails.album?.url?:"",albumDetails.album?.name?:"",albumDetails.album?.artist?:"",albumDetails.album?.image?.get(0)?.text?:"")
         }
     }
 
@@ -103,40 +107,46 @@ class AlbumDetailsActivity : AppCompatActivity() {
     }
 
 
-    private fun setDetailsText(albumDetails: String) {
+    private fun setDetailsText(albumDetails: String?) {
+        if(!albumDetails.isNullOrEmpty()){
+            var myShortenedText = ""
+            binding.tvDetails.text = albumDetails;
+            binding.tvDetails.post {
+                // Past the maximum number of lines we want to display.
+                if (binding.tvDetails.lineCount > 3) {
+                    val lastCharShown = binding.tvDetails.layout.getLineVisibleEnd(3 - 1);
 
-        var myShortenedText = ""
-        binding.tvDetails.text = albumDetails;
-        binding.tvDetails.post {
-            // Past the maximum number of lines we want to display.
-            if (binding.tvDetails.lineCount > 3) {
-                val lastCharShown = binding.tvDetails.layout.getLineVisibleEnd(3 - 1);
+                    binding.tvDetails.maxLines = 3;
+                    val actionDisplayText = albumDetails.substring(0, lastCharShown) + "   "
 
-                binding.tvDetails.maxLines = 3;
-                val actionDisplayText = albumDetails.substring(0, lastCharShown) + "   "
-
-                myShortenedText = actionDisplayText
-                // Set the truncated text to the TextView
-                binding.tvReadMore.visibility = View.VISIBLE
-                binding.tvDetails.text = actionDisplayText;
-            } else {
-                myShortenedText = albumDetails
+                    myShortenedText = actionDisplayText
+                    // Set the truncated text to the TextView
+                    binding.tvReadMore.visibility = View.VISIBLE
+                    binding.tvDetails.text = actionDisplayText;
+                } else {
+                    myShortenedText = albumDetails
+                }
             }
-        }
-        binding.tvReadMore.setOnClickListener {
-            // Handle click event here, for example, show the full text.
-            binding.tvDetails.maxLines = Integer.MAX_VALUE
-            binding.tvDetails.text = albumDetails
+            binding.tvReadMore.setOnClickListener {
+                // Handle click event here, for example, show the full text.
+                binding.tvDetails.maxLines = Integer.MAX_VALUE
+                binding.tvDetails.text = albumDetails
 
-            binding.tvReadMore.visibility = View.GONE
-            binding.tvReadLess.visibility = View.VISIBLE
-        }
-        binding.tvReadLess.setOnClickListener {
-            // Handle click event here, for example, show the full text.
-            binding.tvDetails.maxLines = 3
-            binding.tvDetails.text = myShortenedText
-            binding.tvReadMore.visibility = View.VISIBLE
-            binding.tvReadLess.visibility = View.GONE
+                binding.tvReadMore.visibility = View.GONE
+                binding.tvReadLess.visibility = View.VISIBLE
+            }
+            binding.tvReadLess.setOnClickListener {
+                // Handle click event here, for example, show the full text.
+                binding.tvDetails.maxLines = 3
+                binding.tvDetails.text = myShortenedText
+                binding.tvReadMore.visibility = View.VISIBLE
+                binding.tvReadLess.visibility = View.GONE
+            }
+        }else{
+            binding.tvDetails.gone()
+            binding.tvReadLess.gone()
+            binding.tvReadMore.gone()
+            binding.tvAbout.gone()
         }
     }
 
