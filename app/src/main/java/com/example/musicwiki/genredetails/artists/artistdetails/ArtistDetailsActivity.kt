@@ -5,11 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.musicwiki.ActivityNavigator
 import com.example.musicwiki.R
 import com.example.musicwiki.databinding.ActivityArtistDetailsBinding
 import com.example.musicwiki.genredetails.GenreDetailsViewModel
@@ -18,7 +20,11 @@ import com.example.musicwiki.genredetails.artists.artistdetails.model.ArtistDeta
 import com.example.musicwiki.genredetails.artists.artistdetails.model.Tag
 import com.example.musicwiki.util.Resource
 import com.example.musicwiki.util.openUrlInCustomTabIntent
+import com.example.musicwiki.util.shareLink
 import com.google.android.material.chip.Chip
+import io.branch.indexing.BranchUniversalObject
+import io.branch.referral.Branch
+import io.branch.referral.util.LinkProperties
 
 class ArtistDetailsActivity : AppCompatActivity() {
 
@@ -75,6 +81,9 @@ class ArtistDetailsActivity : AppCompatActivity() {
         binding.tvVisitWebsite.setOnClickListener {
             openUrlInCustomTabIntent(artistDetails.artist.url,this)
         }
+        binding.toolbar.llLinkShare.setOnClickListener{
+            createShareLink(artistDetails.artist.url,artistDetails.artist.name,artistDetails.artist.image.get(0).text)
+        }
     }
 
     private fun setDetailsText(artistDetails: String) {
@@ -126,5 +135,33 @@ class ArtistDetailsActivity : AppCompatActivity() {
                 binding.llSelectionTabs.addView(chip)
             }
         }
+    }
+
+    private fun createShareLink(redirectUrl:String,artistName:String,imageUrl:String){
+        val buo = BranchUniversalObject()
+            .setCanonicalIdentifier("artistDetails/$artistName")
+            .setTitle("$artistName")
+            .setContentDescription("Checkout this amazing artist")
+            .setContentImageUrl(imageUrl)
+            .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+            .setLocalIndexMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+        val lp = LinkProperties()
+            .setFeature("sharing")
+            .addControlParameter("\$fallback_url", redirectUrl)
+            .addControlParameter("artist",artistName)
+            .addControlParameter("sharedScreen","ArtistDetails")
+        buo.generateShortUrl(this, lp, Branch.BranchLinkCreateListener { url, error ->
+            if (error == null) {
+                Log.i("BRANCH SDK", "got my Branch link to share: " + url)
+                shareLink(this,url)
+            }
+        })
+    }
+
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        ActivityNavigator.navigateToDashboard(this)
+        finish()
     }
 }

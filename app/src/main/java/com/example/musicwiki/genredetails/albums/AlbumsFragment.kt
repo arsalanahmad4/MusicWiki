@@ -7,15 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicwiki.R
 import com.example.musicwiki.genredetails.GenreDetailsActivity
 import com.example.musicwiki.genredetails.GenreDetailsViewModel
 import com.example.musicwiki.genredetails.albums.adapter.AlbumsAdapter
-import com.example.musicwiki.genredetails.albums.adapter.AlbumsPagingAdapter
-import com.example.musicwiki.genredetails.albums.adapter.LoadAdapter
-import com.example.musicwiki.genredetails.albums.model.Album
 import com.example.musicwiki.util.Constants
 import com.example.musicwiki.util.Resource
 
@@ -24,9 +20,6 @@ class AlbumsFragment : Fragment() {
 
     lateinit var viewModel: GenreDetailsViewModel
     lateinit var  recyclerView: RecyclerView
-
-    lateinit var adapter: AlbumsPagingAdapter
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,31 +38,6 @@ class AlbumsFragment : Fragment() {
         //handlePaging()
         arguments?.getString(Constants.BUNDLE_KEY_GENRE_NAME)?.let { viewModel.getTopAlbums(it,1) }
 
-//        arguments?.getString(Constants.BUNDLE_KEY_GENRE_NAME)?.let { viewModel.getPagedIndentsList(it) }
-
-
-    }
-
-
-    private fun handlePaging(){
-        val interaction = object : AlbumsPagingAdapter.Interaction {
-            override fun onItemSelected(position: Int, item: Album?) {
-
-            }
-        }
-        adapter = AlbumsPagingAdapter(interaction)
-        viewModel.allIndentslist.observe(viewLifecycleOwner, Observer {
-            adapter.submitData(lifecycle, it)
-        })
-
-
-
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = LoadAdapter(),
-            footer = LoadAdapter()
-        )
     }
 
     private fun bindObserver(){

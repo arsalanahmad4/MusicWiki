@@ -19,10 +19,9 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        Handler().postDelayed(Runnable {
-            navigateToLandingScreen(this)
-            finish()
-        }, 2000L)
+//        Handler().postDelayed(Runnable {
+//            finish()
+//        }, 2000L)
     }
 
     override fun onStart() {
@@ -47,21 +46,26 @@ class SplashActivity : AppCompatActivity() {
                     val gson = Gson()
                     val parser = JsonParser()
                     val json = parser.parse(linkProperties.toString())
-                    val shareScreenDataModel = gson.fromJson(json, BranchResponseData::class.java)
-                    Log.e("BranchDeepLink",shareScreenDataModel.genere?:"")
+                    val branchDataModel = gson.fromJson(json, BranchResponseData::class.java)
+                    navigateToLandingScreen(this,branchDataModel)
+                    finishAffinity()
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    navigateToLandingScreen(this,null)
+                    finishAffinity()
                 }
             }
         }
 
-    private fun navigateToLandingScreen(context: Context){
-        val artistDetailsIntent = Intent(context, AllGenresActivity::class.java)
-        val bundle = Bundle()
-        bundle.apply {
-
+    private fun navigateToLandingScreen(context: Context,model:BranchResponseData?){
+        if(model != null){
+            if(model.sharedScreen == "AlbumDetails" && !model.album.isNullOrEmpty() && !model.artist.isNullOrEmpty()){
+                ActivityNavigator.navigateToAlbumDetailsScreen(context, model.album!!, model.artist!!)
+            }else if(model.sharedScreen == "ArtistDetails" && !model.artist.isNullOrEmpty()){
+                ActivityNavigator.navigateToArtistDetailsScreen(context,model.artist!!)
+            } else{
+                ActivityNavigator.navigateToDashboard(context)
+            }
         }
-        artistDetailsIntent.putExtras(bundle)
-        context.startActivity(artistDetailsIntent)
     }
 }

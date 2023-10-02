@@ -7,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.musicwiki.ActivityNavigator
 import com.example.musicwiki.R
 import com.example.musicwiki.databinding.ActivityAlbumDetailsBinding
 import com.example.musicwiki.genredetails.GenreDetailsViewModel
@@ -85,7 +86,7 @@ class AlbumDetailsActivity : AppCompatActivity() {
             openUrlInCustomTabIntent(albumDetails.album.url,this)
         }
         binding.toolbar.llLinkShare.setOnClickListener{
-            createShareLink(albumDetails.album.url)
+            createShareLink(albumDetails.album.url,albumDetails.album.name,albumDetails.album.artist,albumDetails.album.image.get(0).text)
         }
     }
 
@@ -141,19 +142,20 @@ class AlbumDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun createShareLink(redirectUrl:String){
+    private fun createShareLink(redirectUrl:String,albumName:String,artistName:String,imageUrl:String){
         val buo = BranchUniversalObject()
-            .setCanonicalIdentifier("content/12345")
-            .setTitle("My Content Title")
-            .setContentDescription("My Content Description")
-            .setContentImageUrl("https://lorempixel.com/400/400")
+            .setCanonicalIdentifier("albumdetails/$albumName")
+            .setTitle("$albumName")
+            .setContentDescription("Checkout this cool album")
+            .setContentImageUrl(imageUrl)
             .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
             .setLocalIndexMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
-            .setContentMetadata(ContentMetadata().addCustomMetadata("key1", "value1"))
         val lp = LinkProperties()
             .setFeature("sharing")
             .addControlParameter("\$fallback_url", redirectUrl)
-            .addControlParameter("custom", "data")
+            .addControlParameter("album", albumName)
+            .addControlParameter("artist",artistName)
+            .addControlParameter("sharedScreen","AlbumDetails")
         buo.generateShortUrl(this, lp, Branch.BranchLinkCreateListener {url, error ->
             if (error == null) {
                 Log.i("BRANCH SDK", "got my Branch link to share: " + url)
@@ -162,4 +164,10 @@ class AlbumDetailsActivity : AppCompatActivity() {
         })
     }
 
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        ActivityNavigator.navigateToDashboard(this)
+        finish()
+    }
 }

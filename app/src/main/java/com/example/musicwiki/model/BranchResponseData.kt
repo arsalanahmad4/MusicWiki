@@ -6,5 +6,7 @@ data class BranchResponseData(
     @SerializedName("+click_timestamp")var clickTimeStamp: Int?,
     @SerializedName("+clicked_branch_link")var branchLinkClicked: Boolean?,
     @SerializedName("+is_first_session")var isFirstSession: Boolean?,
-    var genere: String?
+    var album: String?,
+    var artist:String?,
+    var sharedScreen: String?
 )

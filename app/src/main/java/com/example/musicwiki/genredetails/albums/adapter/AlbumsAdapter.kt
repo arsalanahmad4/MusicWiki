@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.musicwiki.ActivityNavigator
 import com.example.musicwiki.R
 import com.example.musicwiki.genredetails.albums.albumdetails.AlbumDetailsActivity
 import com.example.musicwiki.genredetails.albums.model.Album
@@ -48,19 +49,8 @@ class AlbumsAdapter(private val mData: List<Album>) : RecyclerView.Adapter<Album
                 .centerCrop()
                 .into(imageView)
             itemView.setOnClickListener {
-                navigateToAlbumDetailsScreen(itemView.context,data.name,data.artist.name)
+                ActivityNavigator.navigateToAlbumDetailsScreen(itemView.context,data.name,data.artist.name)
             }
-        }
-
-        fun navigateToAlbumDetailsScreen(context: Context, album:String,artist:String){
-            val artistDetailsIntent = Intent(context, AlbumDetailsActivity::class.java)
-            val bundle = Bundle()
-            bundle.apply {
-                putString("album", album)
-                putString("artist",artist)
-            }
-            artistDetailsIntent.putExtras(bundle)
-            context.startActivity(artistDetailsIntent)
         }
     }
 }

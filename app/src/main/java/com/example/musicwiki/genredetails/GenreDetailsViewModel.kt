@@ -10,15 +10,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.example.musicwiki.MusicWikiApplication
 import com.example.musicwiki.MusicWikiRepository
-import com.example.musicwiki.genredetails.albums.adapter.AlbumsPagingSource
 import com.example.musicwiki.genredetails.albums.albumdetails.model.AlbumDetailsResponse
-import com.example.musicwiki.genredetails.albums.model.Album
 import com.example.musicwiki.genredetails.albums.model.TopAlbumsResponse
 import com.example.musicwiki.genredetails.artists.artistdetails.model.ArtistDetailsResponse
 import com.example.musicwiki.genredetails.artists.model.TopArtistResponse
 import com.example.musicwiki.genredetails.model.GenreDetailResponse
 import com.example.musicwiki.genredetails.tracks.model.TopTracksResponse
-import com.example.musicwiki.model.AllGenresResponse
 import com.example.musicwiki.util.Resource
 import com.example.musicwiki.util.hasInternetConnection
 import kotlinx.coroutines.launch
@@ -255,14 +252,4 @@ class GenreDetailsViewModel(private val musicWikiRepository: MusicWikiRepository
         return Resource.Error(response.message())
     }
 
-//    var allIndentslist:LiveData<PagingData<Album>>? = null
-//    fun getPagedIndentsList(filter:String) {
-//        allIndentslist =  musicWikiRepository.getPagedIndents(filter).cachedIn(viewModelScope)
-//    }
-
-    private val pagingSourceFactory = { AlbumsPagingSource(musicWikiRepository,"electronic") }
-    val allIndentslist = Pager(
-        config = PagingConfig(50),
-        pagingSourceFactory = pagingSourceFactory
-    ).liveData.cachedIn(viewModelScope)
 }

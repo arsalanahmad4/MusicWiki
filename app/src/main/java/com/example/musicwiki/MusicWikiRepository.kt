@@ -4,7 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.liveData
 import com.example.musicwiki.api.RetrofitInstance
-import com.example.musicwiki.genredetails.albums.adapter.AlbumsPagingSource
 
 class MusicWikiRepository {
 
@@ -20,9 +19,4 @@ class MusicWikiRepository {
     suspend fun getAlbumDetails(artist:String,album:String) = RetrofitInstance.api.getAlbumDetails(artist,album)
 
     suspend fun getArtistDetails(artist:String) = RetrofitInstance.api.getArtistDetails(artist)
-
-    fun getPagedIndents(tag: String) = Pager(
-        config = PagingConfig(pageSize = 50, maxSize = 100, prefetchDistance = 1),
-        pagingSourceFactory = { AlbumsPagingSource(MusicWikiRepository(),tag) }
-    ).liveData
 }
