@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:name=".MusicWikiApplication"
@@ -69,10 +70,10 @@
             android:value="false" />
         <meta-data
             android:name="io.branch.sdk.BranchKey"
-            android:value="key_live_jveDhIVvDiCtfFUER6qYxkggEDerqp2j" />
+            android:value="@string/branch_key_live" />
         <meta-data
             android:name="io.branch.sdk.BranchKey.test"
-            android:value="key_test_bCcAkJPCucFyotVAP3A1BfbfCukrFp8q" />
+            android:value="@string/branch_key_test" />
     </application>
 
 </manifest>

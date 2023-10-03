@@ -45,6 +45,35 @@ class RetrofitInstance {
             retrofit.create(LastFMApi::class.java)
         }
 
+
+        private val branchRetrofit by lazy {
+            Retrofit.Builder()
+                .baseUrl("https://api2.branch.io")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(getBranchOkHttpClient())
+                .build()
+        }
+
+        private fun getBranchOkHttpClient(): OkHttpClient {
+            val okHttpClient = OkHttpClient.Builder()
+                .addInterceptor { chain ->
+                    val url = chain
+                        .request()
+                        .url
+                        .newBuilder()
+                        .build()
+                    chain.proceed(chain.request().newBuilder().addHeader("Content-Type","application/json").url(url).build())
+                }
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            okHttpClient.addInterceptor(ChuckerHandler.init()!!)
+
+            return okHttpClient.build()
+        }
+
+        val branchApi: LastFMApi by lazy {
+            branchRetrofit.create(LastFMApi::class.java)
+        }
+
     }
 
 

@@ -8,7 +8,9 @@ import com.example.musicwiki.genredetails.model.GenreDetailResponse
 import com.example.musicwiki.genredetails.tracks.model.TopTracksResponse
 import com.example.musicwiki.model.AllGenresResponse
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface LastFMApi {
@@ -58,4 +60,7 @@ interface LastFMApi {
         @Query("artist")
         artist:String
     ) :Response<ArtistDetailsResponse>
+
+    @POST("v2/event/custom")
+    suspend fun customEventsApi(@Body branchEventRequest: BranchEventRequest):Response<BranchResponse>
 }

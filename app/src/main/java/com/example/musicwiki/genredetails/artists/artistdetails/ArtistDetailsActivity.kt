@@ -21,6 +21,7 @@ import com.example.musicwiki.util.visible
 import com.google.android.material.chip.Chip
 import io.branch.indexing.BranchUniversalObject
 import io.branch.referral.Branch
+import io.branch.referral.util.BranchEvent
 import io.branch.referral.util.LinkProperties
 
 class ArtistDetailsActivity : AppCompatActivity() {
@@ -158,6 +159,7 @@ class ArtistDetailsActivity : AppCompatActivity() {
         buo.generateShortUrl(this, lp, Branch.BranchLinkCreateListener { url, error ->
             if (error == null) {
                 Log.i("BRANCH SDK", "got my Branch link to share: " + url)
+                trackLinkCreation(url,artistName)
                 shareLink(this,url)
             }
         })
@@ -168,5 +170,15 @@ class ArtistDetailsActivity : AppCompatActivity() {
         super.onBackPressed()
         ActivityNavigator.navigateToDashboard(this)
         finish()
+    }
+
+    private fun trackLinkCreation(link:String,artist:String){
+        BranchEvent("ArtistLink")
+            .setCustomerEventAlias("artist_alias")
+            .setDescription("Artist Shared")
+            .setSearchQuery("artist name")
+            .addCustomDataProperty("CreatedLink", link)
+            .addCustomDataProperty("artist",artist)
+            .logEvent(applicationContext)
     }
 }
