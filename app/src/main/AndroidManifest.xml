@@ -23,19 +23,23 @@
         <activity
             android:name=".genredetails.artists.artistdetails.ArtistDetailsActivity"
             android:exported="false"
-            android:theme="@style/CUstomArtistDetailsTheme"/>
+            android:theme="@style/CUstomArtistDetailsTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".genredetails.albums.albumdetails.AlbumDetailsActivity"
             android:exported="false"
-            android:theme="@style/CUstomArtistDetailsTheme"/>
+            android:theme="@style/CUstomArtistDetailsTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".genredetails.GenreDetailsActivity"
             android:exported="false"
             android:label="@string/title_activity_genre_details"
-            android:theme="@style/Theme.MusicWiki.NoActionBar" />
+            android:theme="@style/Theme.MusicWiki.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".AllGenresActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SplashActivity"
             android:exported="true"
