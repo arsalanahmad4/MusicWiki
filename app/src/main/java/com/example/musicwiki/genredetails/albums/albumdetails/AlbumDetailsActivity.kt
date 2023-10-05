@@ -25,8 +25,13 @@ import com.example.musicwiki.util.visible
 import com.google.android.material.chip.Chip
 import io.branch.indexing.BranchUniversalObject
 import io.branch.referral.Branch
+import io.branch.referral.util.BRANCH_STANDARD_EVENT
+import io.branch.referral.util.BranchContentSchema
 import io.branch.referral.util.BranchEvent
+import io.branch.referral.util.ContentMetadata
+import io.branch.referral.util.CurrencyType
 import io.branch.referral.util.LinkProperties
+import io.branch.referral.util.ProductCategory
 
 
 class AlbumDetailsActivity : AppCompatActivity() {
@@ -100,6 +105,7 @@ class AlbumDetailsActivity : AppCompatActivity() {
         albumDetails.album?.tags?.tag?.let { addChipsFromList(it) }
         binding.tvVisitWebsite.setOnClickListener {
             openUrlInCustomTabIntent(albumDetails.album?.url ?: "", this)
+            trackCommerceEvent(albumDetails.album?.url ?: "",albumDetails.album?.name ?: "",albumDetails.album?.artist ?: "")
         }
 
         val wm = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
@@ -231,6 +237,46 @@ class AlbumDetailsActivity : AppCompatActivity() {
             .addCustomDataProperty("CreatedLink", link)
             .addCustomDataProperty("album", album)
             .addCustomDataProperty("artist", artist)
+            .logEvent(applicationContext)
+    }
+
+    private fun trackCommerceEvent(url:String,albumName:String,artistName: String){
+        val buo = BranchUniversalObject()
+            .setCanonicalIdentifier("musicalbum/${albumName}")
+            .setCanonicalUrl(url)
+            .setTitle(albumName)
+            .setContentMetadata(
+                ContentMetadata()
+                    .addCustomMetadata("albumName", albumName)
+                    .addCustomMetadata("artistName", artistName)
+                    .setRating(5.2, 6.0, 5)
+                    .setPrice(10.0, CurrencyType.USD)
+                    .setProductBrand("MusicWiki")
+                    .setProductCategory(ProductCategory.SOFTWARE)
+                    .setProductName("Music Wiki WebSite")
+                    .setProductCondition(ContentMetadata.CONDITION.EXCELLENT)
+                    .setProductVariant("test_prod_variant")
+                    .setQuantity(1.5)
+                    .setSku("test_sku")
+                    .setContentSchema(BranchContentSchema.COMMERCE_OTHER)
+            )
+            .addKeyWord(albumName)
+            .addKeyWord(artistName)
+
+
+//  Do not add an empty branchUniversalObject to the BranchEvent
+        BranchEvent(BRANCH_STANDARD_EVENT.VIEW_AD)
+            .setAffiliation("test_affiliation")
+            .setCustomerEventAlias("my_custom_alias")
+            .setCoupon("Coupon Code")
+            .setCurrency(CurrencyType.USD)
+            .setDescription("Customer visited website")
+            .setShipping(0.0)
+            .setRevenue(1.5)
+            .setSearchQuery("Test Search query")
+            .addCustomDataProperty("EVENT_PROPERTY_ARTIST", artistName)
+            .addCustomDataProperty("EVENT_PROPERTY_ALBUM", albumName)
+            .addContentItems(buo)
             .logEvent(applicationContext)
     }
 }
