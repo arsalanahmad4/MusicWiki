@@ -7,7 +7,8 @@ data class BranchEventRequest(
     var debug: Boolean? = false,
     var event_data: EventData?,
     var name: String?,
-    var user_data: UserData?
+    var user_data: UserData?,
+    var metadata: MetaData?
 )
 
 data class CustomData(
@@ -26,4 +27,9 @@ data class UserData(
     var local_ip: String?,
     var os: String? = "Android",
     var sdk: String? = "android"
+)
+
+data class MetaData(
+    var android_id: String? = "139dcdee-8d58-40b4-8b2a-fb9a62573a61",
+    var aaid : String? = "139dcdee-8d58-40b4-8b2a-fb9a62573a61"
 )

@@ -1,0 +1,17 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Shortcut 1:
+    Throws the user to Main Activity through the intent-->
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_action_name"
+        android:shortcutId="compose0"
+        android:shortcutShortLabel="@string/action_settings">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.example.musicwiki.SplashActivity"
+            android:targetPackage="com.example.musicwiki"
+            android:data="content://com.yourname.yourapp/compose/new?from=shortcut" />
+    </shortcut>
+
+</shortcuts>

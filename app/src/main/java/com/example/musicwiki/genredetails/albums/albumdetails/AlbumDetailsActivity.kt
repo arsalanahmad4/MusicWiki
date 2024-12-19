@@ -6,8 +6,9 @@ import android.provider.Settings
 import android.text.format.Formatter
 import android.util.Log
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.musicwiki.R
@@ -19,7 +20,6 @@ import com.example.musicwiki.genredetails.albums.albumdetails.model.Tag
 import com.example.musicwiki.util.ActivityNavigator
 import com.example.musicwiki.util.Resource
 import com.example.musicwiki.util.gone
-import com.example.musicwiki.util.openUrlInCustomTabIntent
 import com.example.musicwiki.util.shareLink
 import com.example.musicwiki.util.visible
 import com.google.android.material.chip.Chip
@@ -104,7 +104,19 @@ class AlbumDetailsActivity : AppCompatActivity() {
         setDetailsText(albumDetails.album?.wiki?.summary)
         albumDetails.album?.tags?.tag?.let { addChipsFromList(it) }
         binding.tvVisitWebsite.setOnClickListener {
-            openUrlInCustomTabIntent(albumDetails.album?.url ?: "", this)
+            //openUrlInCustomTabIntent("https://f6mb.app.link/?\$deeplink_path=shopback%3A%2F%2Fcampaign%3Furl%3Dhttps%3A%2F%2Fwww.shopback.co.id%2Fredirect%2Falink%2F1019058&~feature=CRM&~channel=ps&~campaign=%5BID%20Online%5D_mx_bd_manual_ps_20241119_1200_LVA1%2BLVA2%2BLVA3-Android_Kredivo"?: "", this)
+            val webView = WebView(this)
+            val url = "https://f6mb.app.link/?\$deeplink_path=shopback%3A%2F%2Fcampaign%3Furl%3Dhttps%3A%2F%2Fwww.shopback.co.id%2Fredirect%2Falink%2F1019058&~feature=CRM&~channel=ps&~campaign=%5BID%20Online%5D_mx_bd_manual_ps_20241119_1200_LVA1%2BLVA2%2BLVA3-Android_Kredivo"
+            webView.webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                    // Log the URL that is about to be loaded
+                    Log.d("WebView", "Loading URL: $url")
+                    return super.shouldOverrideUrlLoading(view, url)
+                }
+            }
+
+            // Load the URL into the WebView
+            webView.loadUrl(url)
             trackCommerceEvent(albumDetails.album?.url ?: "",albumDetails.album?.name ?: "",albumDetails.album?.artist ?: "")
         }
 
@@ -112,14 +124,14 @@ class AlbumDetailsActivity : AppCompatActivity() {
         val ip: String = Formatter.formatIpAddress(wm.connectionInfo.ipAddress)
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         binding.toolbar.llLinkShare.setOnClickListener {
-            createShareLink(
-                albumDetails.album?.url ?: "",
-                albumDetails.album?.name ?: "",
-                albumDetails.album?.artist ?: "",
-                albumDetails.album?.image?.get(0)?.text ?: "",
-                ip,
-                deviceId
-            )
+//            createShareLink(
+//                albumDetails.album?.url ?: "",
+//                albumDetails.album?.name ?: "",
+//                albumDetails.album?.artist ?: "",
+//                albumDetails.album?.image?.get(0)?.text ?: "",
+//                ip,
+//                deviceId
+//            )
         }
     }
 

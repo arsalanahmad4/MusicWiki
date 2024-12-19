@@ -1,15 +1,12 @@
 package com.example.musicwiki
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.liveData
 import com.example.musicwiki.api.BranchEventRequest
 import com.example.musicwiki.api.BranchResponse
 import com.example.musicwiki.api.CustomData
 import com.example.musicwiki.api.EventData
+import com.example.musicwiki.api.MetaData
 import com.example.musicwiki.api.RetrofitInstance
 import com.example.musicwiki.api.UserData
-import com.example.musicwiki.genredetails.artists.artistdetails.model.ArtistDetailsResponse
 import retrofit2.Response
 
 class MusicWikiRepository {
@@ -42,6 +39,7 @@ class MusicWikiRepository {
     ): Response<BranchResponse> {
         val customData = CustomData(CreatedLink = link, artist = artist, album = album)
         val eventData = EventData(description = eventDescription, search_query = eventSearchQuery)
+        val meta = MetaData(androidId,androidId)
         val userData = UserData(android_id = androidId, local_ip = localIp)
         val request = BranchEventRequest(
             branch_key = branchKey,
@@ -49,7 +47,8 @@ class MusicWikiRepository {
             customer_event_alias = eventAlias,
             custom_data = customData,
             event_data = eventData,
-            user_data = userData
+            user_data = userData,
+            metadata = meta
         )
         return RetrofitInstance.branchApi.customEventsApi(request)
     }

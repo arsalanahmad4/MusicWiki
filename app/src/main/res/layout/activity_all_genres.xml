@@ -17,6 +17,12 @@
         android:textSize="24sp"
         android:textStyle="italic"/>
 
+    <Button
+        android:id="@+id/btnTriggerPurchase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Trigger Purchase"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

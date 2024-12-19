@@ -3,8 +3,9 @@ package com.example.musicwiki
 import android.app.Application
 import android.content.Context
 import io.branch.referral.Branch
+import io.branch.referral.BranchLogger
 
-
+//import io.branch.referral.BranchLogger
 
 
 class MusicWikiApplication:Application(){
@@ -20,8 +21,12 @@ class MusicWikiApplication:Application(){
         instance = this
 
         // Branch logging for debugging
-        Branch.enableLogging()
-        // Branch object initialization
+        //Branch.enableLogging()
+        Branch.enableLogging(BranchLogger.BranchLogLevel.VERBOSE)
         Branch.getAutoInstance(this)
+        //Branch.expectDelayedSessionInitialization(true)
+        // Branch object initialization
+        //Branch.getAutoInstance(this,"key_test_bCcAkJPCucFyotVAP3A1BfbfCukrFp8q")
+        //Branch.getAutoInstance(this).disableTracking(false)
     }
 }

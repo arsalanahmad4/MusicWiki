@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:name=".MusicWikiApplication"
@@ -24,22 +24,23 @@
             android:name=".genredetails.artists.artistdetails.ArtistDetailsActivity"
             android:exported="false"
             android:theme="@style/CUstomArtistDetailsTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".genredetails.albums.albumdetails.AlbumDetailsActivity"
             android:exported="false"
             android:theme="@style/CUstomArtistDetailsTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".genredetails.GenreDetailsActivity"
             android:exported="false"
             android:label="@string/title_activity_genre_details"
             android:theme="@style/Theme.MusicWiki.NoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".AllGenresActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -50,23 +51,63 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="www.10bis.co.il" />
+                <data android:pathPrefix="/next/restaurants/" />
+            </intent-filter>
+
+            <!-- Branch URI Scheme -->
             <intent-filter>
+                <!-- If utilizing $deeplink_path please explicitly declare your hosts, or utilize a wildcard(*) -->
+                <!-- REPLACE `android:scheme` with your Android URI scheme -->
                 <data
-                    android:host="open"
-                    android:scheme="open" />
+                    android:scheme="musicwiki"
+                    android:host="open" />
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">                                <action android:name="android.intent.action.VIEW" />
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+
                 <data
-                    android:host="musicwiki.app.link"
-                    android:scheme="https" />
+                    android:scheme="https"
+                    android:host="musicwiki.app.link" />
+                <!--                <data android:path="/test/"/>-->
+                <!--                <data android:pathPattern="/[a-zA-Z]+"/>-->
+
             </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="arsalan-branch.github.io" />
+                <data android:pathPrefix="/branchwebsdk/" />
+            </intent-filter>
+
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <meta-data

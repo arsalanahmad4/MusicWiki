@@ -10,19 +10,26 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicwiki.adapter.ElementsAdapter
 import com.example.musicwiki.databinding.ActivityAllGenresBinding
-import com.example.musicwiki.databinding.ActivityGenreDetailsBinding
 import com.example.musicwiki.genredetails.GenreDetailsActivity
 import com.example.musicwiki.model.Tag
 import com.example.musicwiki.util.Constants
 import com.example.musicwiki.util.Resource
+import io.branch.indexing.BranchUniversalObject
+import io.branch.referral.Branch
 import io.branch.referral.util.BRANCH_STANDARD_EVENT
+import io.branch.referral.util.BranchContentSchema
 import io.branch.referral.util.BranchEvent
+import io.branch.referral.util.ContentMetadata
+import io.branch.referral.util.CurrencyType
+import io.branch.referral.util.ProductCategory
+import io.branch.referral.validators.IntegrationValidator
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
@@ -89,6 +96,10 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
         elementsAdapter!!.setWithFooter(true) //enabling footer to show
 
         recyclerView?.adapter = elementsAdapter
+
+        GlobalScope.launch {
+            IntegrationValidator.validate(this@AllGenresActivity)
+        }
     }
 
     // Unregister the onBackPressedCallback in the onDestroy or onDestroyView method
@@ -101,7 +112,53 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
         _binding?.swipeRefreshLayout?.setOnRefreshListener {
             musicWikiViewModel.getAllGenre()
         }
+        _binding?.btnTriggerPurchase?.setOnClickListener {
+            triggerPurchase()
+        }
     }
+
+    private fun triggerPurchase(){
+        val buo = BranchUniversalObject()
+            .setCanonicalIdentifier("myprod/1234")
+            .setCanonicalUrl("https://test_canonical_url")
+            .setTitle("test_title")
+            .setContentMetadata(
+                ContentMetadata()
+                    .addImageCaptions("image_caption_1", "image_caption2", "image_caption3")
+                    .setAddress("Street_Name", "test city", "test_state", "test_country", "test_postal_code")
+                    .setRating(5.2, 6.0, 5)
+                    .setLocation(-151.67, -124.0)
+                    .setPrice(100.0, CurrencyType.USD)
+                    .setProductBrand("test_prod_brand")
+                    .setProductCategory(ProductCategory.APPAREL_AND_ACCESSORIES)
+                    .setProductName("test_prod_name")
+                    .setProductCondition(ContentMetadata.CONDITION.EXCELLENT)
+                    .setProductVariant("test_prod_variant")
+                    .setQuantity(1.5)
+                    .setSku("test_sku")
+                    .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
+            )
+            .addKeyWord("keyword1")
+            .addKeyWord("keyword2")
+
+
+//  Create an event
+        BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+            .setAffiliation("test_affiliation")
+            .setCustomerEventAlias("my_custom_alias")
+            .setCoupon("Coupon Code")
+            .setCurrency(CurrencyType.USD)
+            .setDescription("Customer added item to cart")
+            .setShipping(0.0)
+            .setTax(9.75)
+            .setRevenue(100.0)
+            .setSearchQuery("Test Search query")
+            .addCustomDataProperty("Custom_Event_Property_Key1", "testValue1")
+            .addCustomDataProperty("Custom_Event_Property_Key2", "testValue2")
+            .addContentItems(buo) // Add a BranchUniversalObject to the event (cannot be empty)
+            .logEvent(applicationContext)
+    }
+
 
     override fun onClickLoadMore() {
         elementsAdapter!!.setWithFooter(false) // hide footer
@@ -120,8 +177,10 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
         BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
             .setCustomerEventAlias("my_custom_alias")
             .setDescription("Genre Viewed")
+            .addContentItems()
             .addCustomDataProperty(Constants.BUNDLE_KEY_GENRE_NAME, genreName)
             .logEvent(applicationContext)
+        Branch.getInstance().setIdentity("123456")
      }
 
     private fun bindObservers(){
@@ -162,5 +221,8 @@ class AllGenresActivity : AppCompatActivity() , ElementsAdapter.Callbacks{
         }
     }
 
-
+    override fun onStart() {
+        super.onStart()
+        IntegrationValidator.validate(this)
+    }
 }
